@@ -69,6 +69,45 @@ class DBLimitedCompleter(Completer):
 UPDATED_DATA_DB = load_db_data(DATA_DB)
 sub_Module =""
 def to_return_choice(your_input,module_text):
+    # if your_input == 1:
+
+    #     # -------------------------------
+    #     # STEP 1: First raw input
+    #     # -------------------------------
+    #     raw_input = prompt("Type word (any language): ")
+    #     text = unicodedata.normalize("NFC", raw_input)
+
+    #     # -------------------------------
+    #     # STEP 2: Language detection
+    #     # -------------------------------
+    #     try:
+    #         lang = detect(text)
+    #     except:
+    #         lang = "unknown"
+
+    #     # -------------------------------
+    #     # STEP 3: Translate if NOT English
+    #     # -------------------------------
+    #     if lang != "en":
+    #         text = translate_to_english_if_needed(text)
+    #         print(f"Converted (English): {text.title()}")
+
+    #     # -------------------------------
+    #     # STEP 4: SINGLE autocomplete path
+    #     # -------------------------------
+    #     completer = DBLimitedCompleter(UPDATED_DATA_DB, max_items=6)
+
+    #     final_value = prompt(
+    #         "Select from suggestions: ",
+    #         completer=completer,
+    #         default=text.title()
+    #     )
+
+    #     print("Selected:", final_value)
+    #     sub_Module  = final_value
+
+ 
+
     if your_input == 1:
 
         # -------------------------------
@@ -77,23 +116,32 @@ def to_return_choice(your_input,module_text):
         raw_input = prompt("Type word (any language): ")
         text = unicodedata.normalize("NFC", raw_input)
 
-        # -------------------------------
-        # STEP 2: Language detection
-        # -------------------------------
-        try:
-            lang = detect(text)
-        except:
-            lang = "unknown"
+        if not text:
+            print("Empty input")
+            exit()
 
         # -------------------------------
-        # STEP 3: Translate if NOT English
+        # STEP 2: If first char is English → Direct Suggestion
         # -------------------------------
-        if lang != "en":
-            text = translate_to_english_if_needed(text)
-            print(f"Converted (English): {text.title()}")
+        if text[0].isascii() and text[0].isalpha():
+            print("English detected from first character")
+            
+
+        else:
+            # -------------------------------
+            # STEP 3: Detect & Translate
+            # -------------------------------
+            try:
+                lang = detect(text)
+            except:
+                lang = "unknown"
+
+            if lang != "en":
+                text = translate_to_english_if_needed(text)
+                print(f"Converted (English): {text.title()}")
 
         # -------------------------------
-        # STEP 4: SINGLE autocomplete path
+        # STEP 4: Autocomplete
         # -------------------------------
         completer = DBLimitedCompleter(UPDATED_DATA_DB, max_items=6)
 
@@ -104,7 +152,7 @@ def to_return_choice(your_input,module_text):
         )
 
         print("Selected:", final_value)
-        sub_Module  = final_value
+        sub_Module = final_value
     elif your_input == 2:
         sub_Module = live_speech_to_english()
         print(f"Converted (English): {sub_Module.title()}")
